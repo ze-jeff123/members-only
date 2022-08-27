@@ -2,6 +2,15 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet' href='/stylesheets/style.css')
   body
-    block content
+    .full-wrapper
+      block header 
+        .header-container 
+          .header-subgroup
+            a(href="").header-link Become admin
+            a.header-link Become member
+          .header-subgroup
+            a.header-link Sign up
+            a.header-link Log in 
+      block content
