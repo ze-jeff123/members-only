@@ -18,7 +18,7 @@ const userCrudFactory = CrudFactory(router, '/user', User, (req) => ({
 }));
 
 const checkUsernameUniqueness = (value) => {
-  return User.find({ username: value }).exec().then((user) => {
+  return User.findOne({ username: value }).exec().then((user) => {
     if (user) {
       return Promise.reject('Username already taken');
     }
@@ -29,7 +29,15 @@ userCrudFactory.setValidation([
   body('lastName', 'last name is required').trim().isLength({ min: 1 }).escape(),
   body('username').trim().isLength({ min: 1 }).withMessage('username is required')
     .custom(checkUsernameUniqueness).escape(),
-  body('password', 'password is required').trim().isLength({ min: 1 }).escape(),
+  body('password').trim().isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').escape(),
+  body('confirm-password').custom((value , {req}) => {
+    console.log(value, req.body.password);
+    if (value !== req.body.password) {
+      throw new Error('Password confirmation does not match password');
+    }
+
+    return true;
+  })
 ]);
 
 router.get('/users', (req, res) => {
@@ -46,5 +54,9 @@ userCrudFactory.read('user_detail', (req) => {
     }
   })
 });
+
+userCrudFactory.update('user_form');
+
+userCrudFactory.remove('user_remove', {redirect:'/users'});
 
 module.exports = router;

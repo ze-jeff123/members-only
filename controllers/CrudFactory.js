@@ -24,29 +24,18 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
                 if (!errors.isEmpty()) {
                     getData(req).then((data) => {
                         res.render(viewName, { ...data, itemObject, errors: errors.array() });
-                    })
+                    });
+                    return;
                 }
 
-                ItemModel.findOne(itemObject).exec()
-                    .then(
-                        (foundItem) => {
-                            if (foundItem) {
-                                res.redirect(foundItem.url);
-                            } else {
-                                itemDb.save().then(
-                                    () => {
-                                        res.redirect(itemDb.url);
-                                    },
-                                    (err) => {
-                                        next(err);
-                                    }
-                                )
-                            }
-                        },
-                        (err) => {
-                            next(err);
-                        }
-                    )
+                itemDb.save().then(
+                    () => {
+                        res.redirect(itemDb.url);
+                    },
+                    (err) => {
+                        next(err);
+                    }
+                )
             }
         ]));
     }
@@ -60,9 +49,86 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
 
     }
 
+    function update(viewName, getData = () => { return Promise.resolve({}) }) {
+        router.get(routeName + '/:id/update', (req, res, next) => {
+            Promise.all([
+                getData(req),
+                ItemModel.findById(req.params.id),
+            ])
+                .then(
+                    ([data, itemObject]) => {
+                        res.render(viewName, { ...data, itemObject });
+                    },
+                    (err) => {
+                        next(err);
+                    }
+                )
+        });
+
+        router.post(routeName + '/:id/update', [
+            validation.concat(
+                (req, res, next) => {
+                    const errors = validationResult(req);
+
+                    ///the names in the view form need to be exactly the same as the model
+                    const itemObject = itemFactory(req);
+
+                    if (!errors.isEmpty()) {
+                        getData(req).then((data) => {
+                            res.render(viewName, { ...data, itemObject, errors: errors.array() });
+                        });
+                        return;
+                    }
+
+                    ItemModel.findByIdAndUpdate(req.params.id, itemObject).exec().then(
+                        (newItem) => {
+                            res.redirect(newItem.url);
+                        },
+                        (err) => {
+                            next(err);
+                        }
+                    )
+                }
+            )
+        ]);
+    }
+
+    function remove(viewName, {redirect='/'} = {}, getData = () => { return Promise.resolve({}) }) {
+        router.get(routeName + '/:id/remove', (req, res, next) => {
+            Promise.all([
+                getData(req),
+                ItemModel.findById(req.params.id),
+            ])
+                .then(
+                    ([data, itemObject]) => {
+                        res.render(viewName, { ...data, itemObject });
+                    },
+                    (err) => {
+                        next(err);
+                    }
+                )
+        });
+
+        router.post(routeName + '/:id/remove', 
+                (req, res, next) => {
+                    ItemModel.findByIdAndRemove(req.params.id).exec().then(
+                        () => {
+                            res.redirect(redirect);
+                        },
+                        (err) => {
+                            next(err);
+                        }
+                    )
+                }
+            
+        );
+    }
+
     return {
         setValidation,
         create,
         read,
+        update,
+        remove,
     }
 }

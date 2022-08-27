@@ -1,0 +1,6 @@
+extends layout 
+
+block content 
+    p Are you sure you want to remove user #{itemObject.username} ?
+    form(action="" method='POST')
+        button(type='submit') Remove 
