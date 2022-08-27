@@ -59,3 +59,9 @@ a {
   flex-direction : column;
   
 }
+
+.input-group {
+  display : flex;
+  gap : 3px;
+  align-items: center;
+}

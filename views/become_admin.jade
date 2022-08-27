@@ -1,0 +1,16 @@
+extends layout 
+
+block content 
+    if currentUser
+        form(method='POST' action='').vertical-form
+            .form-inputs
+                .input-group
+                    label(for='secret') Secret word
+                    input(name='secret')
+            button(type='submit') Submit
+            if errors 
+                ul 
+                    for error in errors 
+                        li!= error
+    else 
+        h1.vertical-form You must be logged in to become a member!

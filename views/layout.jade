@@ -8,9 +8,13 @@ html
       block header 
         .header-container 
           .header-subgroup
-            a(href="").header-link Become admin
+            a(href="become-admin").header-link Become admin
             a.header-link Become member
           .header-subgroup
-            a.header-link Sign up
-            a.header-link Log in 
+            if currentUser
+              a(href=currentUser.url).header-link #{currentUser.username} 
+              a(href='/log-out').header-link Log out
+            else
+              a(href="/user/create").header-link Sign up
+              a(href='/log-in').header-link Log in 
       block content
