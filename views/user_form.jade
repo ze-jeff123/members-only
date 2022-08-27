@@ -1,0 +1,31 @@
+extends layout 
+
+block content 
+    h1.title Sign up!
+    form(method='POST' action='').vertical-form
+        div.form-inputs
+            div.input-group
+                label(for='firstName') first name: 
+                input(name='firstName', value=(itemObject===undefined?'':itemObject.firstName))
+            div.input-group
+                label(for='lastName') last name: 
+                input(name='lastName', value=(itemObject===undefined?'':itemObject.lastName))
+            div.input-group
+                label(for='username') username: 
+                input(name='username', value=(itemObject===undefined?'':itemObject.username))
+            div.input-group
+                label(for='password') password: 
+                input(type='password' name='password')
+            div.input-group
+                label(for='confirm-password') confirm password: 
+                input(type='password' name='confirm-password')
+            button(type='submit') Sign up
+
+    if errors
+        div.vertical-form
+            ul 
+                for error in errors 
+                    li!= error.msg
+
+
+

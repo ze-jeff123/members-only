@@ -1,8 +1,26 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+
+.vertical-form {
+  display : flex;
+  flex-direction : column;
+  align-items : center;
+  gap : 10px;
+}
+
+.form-inputs {
+  display : flex;
+  flex-direction : column;
+  align-items : flex-end;
+  gap : 10px;
+}
+
+.title {
+  text-align : center;
 }
