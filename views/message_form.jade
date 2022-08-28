@@ -9,7 +9,8 @@ block content
                 input(name='title', value=(itemObject===undefined?'':itemObject.title))
             div.input-group
                 label(for='text') Text: 
-                input(name='text', value=(itemObject===undefined?'':itemObject.text))
+                textarea(name='text') #{itemObject===undefined?'':itemObject.text}
+
         button(type='submit') Publish
 
     if errors

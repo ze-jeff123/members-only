@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const {format} = require('date-fns');
 const Schema = mongoose.Schema;
 
 const MessageSchema = new Schema({
@@ -12,6 +12,10 @@ const MessageSchema = new Schema({
 
 MessageSchema.virtual("url").get(function() {
     return "/message/" + this._id;
+})
+
+MessageSchema.virtual('formattedTimestamp').get(function() {
+    return format(this.timestamp, 'MM-dd-yyyy');
 })
 
 module.exports = mongoose.model("Message", MessageSchema);

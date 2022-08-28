@@ -92,10 +92,13 @@ a {
 
 .message-card {
   padding : 20px;
-  width : 200px;
+  width : 400px;
   background-color : white;
 }
 
+.message-date {
+  text-align : end;
+}
 .message-title {
   font-size : 1.2rem;
   text-align : center;

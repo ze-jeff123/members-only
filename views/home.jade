@@ -9,8 +9,10 @@ block content
                         .message-title #{message.title}
                         if (currentUser&&message.author._id.toString()==currentUser._id)
                             .message-author by #{currentUser.username}
-                        else if (currentUser&&currentUser.membershipStatus)
+                            .message-date Posted on #{message.formattedTimestamp}
+                        else if (currentUser&&(currentUser.membershipStatus||currentUser.isAdmin))
                             .message-author by #{message.author.username}
+                            .message-date Posted on #{message.formattedTimestamp}
                         .message-text #{message.text}  
                         if (currentUser&&message.author._id.toString()==currentUser._id)||(currentUser&&currentUser.isAdmin)
                             .action-group 
