@@ -15,7 +15,7 @@ const compression = require('compression');
 require('dotenv').config();
 
 const mongoose = require('mongoose');
-const mongoDb = process.env.MONGODB_KEY;
+const mongoDb = process.env.MONGODB_URI || process.env.MONGODB_KEY;
 mongoose.connect(mongoDb, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
