@@ -2,11 +2,17 @@ extends layout
 
 block content 
     .home-main-container
-        if currentUser
-            p admin: #{currentUser.isAdmin} member: #{currentUser.membershipStatus}
         if messages
             .messages-container
                 for message in messages 
                     .message-card
                         .message-title #{message.title}
-                        .message-text #{message.text}   
+                        if (currentUser&&message.author.toString()==currentUser._id)
+                            .message-author by #{currentUser.username}
+                        else if (currentUser&&currentUser.membershipStatus)
+                            .message-author by #{message.author.username}
+                        .message-text #{message.text}  
+                        if (currentUser&&message.author.toString()==currentUser._id)||(currentUser&&currentUser.isAdmin)
+                            .action-group 
+                                a(href=message.url+'/update').header-link Edit
+                                a(href=message.url+'/remove').header-link-red Delete

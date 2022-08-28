@@ -1,0 +1,22 @@
+extends layout 
+
+block content 
+    h1.title Write a new message
+    form(method='POST' action='').vertical-form
+        div.form-inputs
+            div.input-group
+                label(for='title') Title: 
+                input(name='title', value=(itemObject===undefined?'':itemObject.title))
+            div.input-group
+                label(for='text') Text: 
+                input(name='text', value=(itemObject===undefined?'':itemObject.text))
+        button(type='submit') Publish
+
+    if errors
+        div.vertical-form
+            ul 
+                for error in errors 
+                    li!= error.msg
+
+
+

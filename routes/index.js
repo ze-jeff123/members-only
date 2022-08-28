@@ -7,15 +7,17 @@ const { setUserRoutes } = require('../controllers/userController');
 const userController = require('../controllers/userController');
 const hashPassword = require('../util/hashPassword');
 const Message = require('../models/message');
+const { setMessageRoutes } = require('../controllers/messageController');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    Message.find({}).exec().then((messages) => {
+    Message.find({}).populate('author').exec().then((messages) => {
         res.render('home', { title: 'Express', user: req.user, messages: messages });
     })
 });
 
 setUserRoutes(router);
+setMessageRoutes(router);
 
 // Authentification routes
 

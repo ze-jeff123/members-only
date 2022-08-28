@@ -13,50 +13,32 @@ module.exports.setMessageRoutes = function (router) {
             title: req.body.title,
             text: req.body.text,
             timestamp: new Date(),
-            author: mongoose.Types.OjectId(req.params.user_id)
+            author: req.user,
         }
     });
 
     messageCrudFactory.setValidation([
-        body('firstName', "first name required").trim().isLength({ min: 1 }).escape(),
-        body('lastName', 'last name is required').trim().isLength({ min: 1 }).escape(),
-        body('username').trim().isLength({ min: 1 }).withMessage('username is required')
-            .custom(checkUsernameUniqueness).escape(),
-        body('password').trim().isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').escape(),
-        body('confirm-password').custom((value, { req }) => {
-            if (value !== req.body.password) {
-                throw new Error('Password confirmation does not match password');
-            }
-
-            return true;
-        }),
-        hashPassword,
+        body('title', "Title is required").trim().isLength({ min: 1 }).escape(),
+        body('text', 'text is required').trim().isLength({ min: 1 }).escape(),
+        body("title", "You must be logged in").custom((value, {req}) => {
+            return (!!req.user) ;
+        })
     ]);
 
-    router.get('/users', (req, res) => {
-        Message.find({}).exec().then((users) => {
-            res.render('users', { users: users });
-        })
-    });
+    messageCrudFactory.create('message_form');
 
-    messageCrudFactory.create('user_form', {
-        onSuccess: passport.authenticate("local", {
-            successRedirect: "/",
-            failureRedirect: "/",
-        })
-    });
-    messageCrudFactory.read('user_detail', {
+    messageCrudFactory.read('message_detail', {
         getData: (req) => {
-            return Message.findById(req.params.id).then((user) => {
+            return Message.findById(req.params.id).then((message) => {
                 return {
-                    user: user,
+                    message: message,
                 }
             })
         }
     })
 
 
-    messageCrudFactory.update('user_form');
+    messageCrudFactory.update('message_form');
 
-    messageCrudFactory.remove('user_remove', { redirect: '/users' });
+    messageCrudFactory.remove('message_remove', { redirect: '/' });
 }

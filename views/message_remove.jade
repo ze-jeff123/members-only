@@ -1,0 +1,6 @@
+extends layout 
+
+block content 
+    form(action="" method='POST').vertical-form
+        p Are you sure you want to delete the message titled #{itemObject.title} ?
+        button(type='submit') delete

@@ -6,7 +6,7 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
         validation = newValidation;
     }
 
-    function create(viewName, {getData = () => { return Promise.resolve({}) }, onSuccess=(req,res,next)=>{res.redirect(res.locals.itemDb.url)}} = {}) {
+    function create(viewName, {getData = () => { return Promise.resolve({}) }, onSuccess=(req,res,next)=>{res.redirect('/')}} = {}) {
         router.get(routeName + '/create', (req, res) => {
             getData(req).then((data) => {
                 res.render(viewName, data);
@@ -41,7 +41,6 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
         ]).concat(onSuccess));
     }
     function read(viewName, {getData = () => { return Promise.resolve({}) }}={}) {
-        //console.log(data);
         router.get(routeName + '/:id', (req, res) => {
             getData(req).then((data) => {
                 res.render(viewName, data);
@@ -58,10 +57,15 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
             ])
                 .then(
                     ([data, itemObject]) => {
-                        res.render(viewName, { ...data, itemObject });
+                        if (!itemObject) {
+                            const err = new Error('Object not found');
+                            err.status = 404;
+                            return next(err);
+                        }
+                        return res.render(viewName, { ...data, itemObject });
                     },
                     (err) => {
-                        next(err);
+                        return next(err);
                     }
                 )
         });
@@ -83,7 +87,7 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
 
                     ItemModel.findByIdAndUpdate(req.params.id, itemObject).exec().then(
                         (newItem) => {
-                            res.redirect(newItem.url);
+                            res.redirect('/');
                         },
                         (err) => {
                             next(err);
@@ -102,6 +106,11 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
             ])
                 .then(
                     ([data, itemObject]) => {
+                        if (!itemObject) {
+                            const err = new Error('Object not found');
+                            err.status = 404;
+                            return next(err);
+                        }
                         res.render(viewName, { ...data, itemObject });
                     },
                     (err) => {

@@ -1,6 +1,8 @@
 :root {
   --link-blue : #3E9EF8;
   --main-background-gray : #E9E9E9;
+  --author-gray : rgb(115, 115, 115);
+  --link-red : rgb(220, 45, 18);
 }
 
 body {
@@ -49,6 +51,11 @@ a {
   color : var(--link-blue);
 }
 
+.header-link-red {
+  text-decoration : none;
+  color : var(--link-red);
+}
+
 .home-main-container {
   background-color : var(--main-background-gray);
   flex : 1 1 100%;
@@ -90,3 +97,14 @@ a {
   font-size : 0.8rem;
   text-align:center;
 }
+
+.message-author {
+  text-align : end;
+  color : var(--author-gray);
+}
+
+.action-group {
+  display : flex;
+  justify-content : space-between;
+}
+
