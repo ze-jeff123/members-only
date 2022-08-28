@@ -6,7 +6,7 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
         validation = newValidation;
     }
 
-    function create(viewName, getData = () => { return Promise.resolve({}) }) {
+    function create(viewName, {getData = () => { return Promise.resolve({}) }, onSuccess=(req,res,next)=>{res.redirect(res.locals.itemDb.url)}} = {}) {
         router.get(routeName + '/create', (req, res) => {
             getData(req).then((data) => {
                 res.render(viewName, data);
@@ -30,16 +30,17 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
 
                 itemDb.save().then(
                     () => {
-                        res.redirect(itemDb.url);
+                        res.locals.itemDb = itemDb;
+                        next();
                     },
                     (err) => {
                         next(err);
                     }
                 )
             }
-        ]));
+        ]).concat(onSuccess));
     }
-    function read(viewName, getData = () => { return Promise.resolve({}) }) {
+    function read(viewName, {getData = () => { return Promise.resolve({}) }}={}) {
         //console.log(data);
         router.get(routeName + '/:id', (req, res) => {
             getData(req).then((data) => {
@@ -49,7 +50,7 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
 
     }
 
-    function update(viewName, getData = () => { return Promise.resolve({}) }) {
+    function update(viewName, {getData = () => { return Promise.resolve({}) }}={}) {
         router.get(routeName + '/:id/update', (req, res, next) => {
             Promise.all([
                 getData(req),
@@ -93,7 +94,7 @@ module.exports = function (router, routeName, ItemModel, itemFactory) {
         ]);
     }
 
-    function remove(viewName, {redirect='/'} = {}, getData = () => { return Promise.resolve({}) }) {
+    function remove(viewName, {redirect='/', getData = () => { return Promise.resolve({}) }}={}) {
         router.get(routeName + '/:id/remove', (req, res, next) => {
             Promise.all([
                 getData(req),

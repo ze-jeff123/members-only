@@ -8,8 +8,15 @@ html
       block header 
         .header-container 
           .header-subgroup
-            a(href="become-admin").header-link Become admin
-            a.header-link Become member
+            if currentUser&&currentUser.isAdmin
+              .header-link You are an admin
+            else 
+              a(href='/become-admin').header-link Become admin
+
+            if currentUser&&currentUser.membershipStatus
+              .header-link You are a member
+            else 
+              a(href='/become-member').header-link Become member
           .header-subgroup
             if currentUser
               a(href=currentUser.url).header-link #{currentUser.username} 

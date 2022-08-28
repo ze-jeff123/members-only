@@ -3,5 +3,10 @@ extends layout
 block content 
     .home-main-container
         if currentUser
-            p hi #{currentUser.isAdmin}
-    
+            p admin: #{currentUser.isAdmin} member: #{currentUser.membershipStatus}
+        if messages
+            .messages-container
+                for message in messages 
+                    .message-card
+                        .message-title #{message.title}
+                        .message-text #{message.text}   

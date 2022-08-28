@@ -5,10 +5,14 @@ const CrudFactory = require('../controllers/CrudFactory');
 const { body } = require('express-validator');
 const { setUserRoutes } = require('../controllers/userController');
 const userController = require('../controllers/userController');
+const hashPassword = require('../util/hashPassword');
+const Message = require('../models/message');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render('home', { title: 'Express', user: req.user });
+    Message.find({}).exec().then((messages) => {
+        res.render('home', { title: 'Express', user: req.user, messages: messages });
+    })
 });
 
 setUserRoutes(router);
@@ -16,6 +20,7 @@ setUserRoutes(router);
 // Authentification routes
 
 router.get('/log-in', userController.logInGet);
+router.post('/log-in', hashPassword);
 router.post('/log-in', userController.logInPost);
 
 router.get('/log-out', userController.logOutPost);

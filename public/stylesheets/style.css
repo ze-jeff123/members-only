@@ -46,6 +46,7 @@ a {
 
 .header-link {
   text-decoration: none;
+  color : var(--link-blue);
 }
 
 .home-main-container {
@@ -64,4 +65,28 @@ a {
   display : flex;
   gap : 3px;
   align-items: center;
+}
+
+.messages-container {
+  margin-top : 15px;
+  gap : 5px;
+  display : flex;
+  flex-direction : column;
+  align-items: center;
+}
+
+.message-card {
+  padding : 20px;
+  width : 200px;
+  background-color : white;
+}
+
+.message-title {
+  font-size : 1.2rem;
+  text-align : center;
+}
+
+.message-text {
+  font-size : 0.8rem;
+  text-align:center;
 }

@@ -3,7 +3,7 @@ extends layout
 block content 
     if currentUser
         form(method='POST' action='').vertical-form
-            h1 Become an admin
+            h1 Become a member
             .form-inputs
                 .input-group
                     label(for='secret') Secret word
@@ -14,4 +14,4 @@ block content
                     for error in errors 
                         li!= error
     else 
-        h1.vertical-form You must be logged in to become an admin!
+        h1.vertical-form You must be logged in to become a member!

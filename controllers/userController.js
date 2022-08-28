@@ -4,6 +4,7 @@ const User = require("../models/user");
 const { body } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const hashPassword = require('../util/hashPassword');
 
 module.exports.setUserRoutes = function (router) {
     const userCrudFactory = CrudFactory(router, '/user', User, (req) => {
@@ -30,19 +31,13 @@ module.exports.setUserRoutes = function (router) {
             .custom(checkUsernameUniqueness).escape(),
         body('password').trim().isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').escape(),
         body('confirm-password').custom((value, { req }) => {
-            console.log(value, req.body.password);
             if (value !== req.body.password) {
                 throw new Error('Password confirmation does not match password');
             }
 
             return true;
         }),
-        (req, res, next) => {
-            bcrypt.hash(req.body.password, 10).then((hashedPassword) => {
-                req.body.password = hashedPassword;
-                next();
-            });
-        }
+        hashPassword,
     ]);
 
     router.get('/users', (req, res) => {
@@ -51,14 +46,22 @@ module.exports.setUserRoutes = function (router) {
         })
     });
 
-    userCrudFactory.create('user_form');
-    userCrudFactory.read('user_detail', (req) => {
-        return User.findById(req.params.id).then((user) => {
-            return {
-                user: user,
-            }
+    userCrudFactory.create('user_form', {
+        onSuccess: passport.authenticate("local", {
+            successRedirect: "/",
+            failureRedirect: "/",
         })
     });
+    userCrudFactory.read('user_detail', {
+        getData: (req) => {
+            return User.findById(req.params.id).then((user) => {
+                return {
+                    user: user,
+                }
+            })
+        }
+    })
+
 
     userCrudFactory.update('user_form');
 
@@ -85,31 +88,37 @@ exports.logOutPost = (req, res, next) => {
     })
 }
 
-exports.becomeAdminGet = function(req,res) {
+exports.becomeAdminGet = function (req, res) {
     res.render('become_admin');
 }
 
-exports.becomeAdminPost = function(req,res) {
-    console.log("hi");
+exports.becomeAdminPost = function (req, res) {
     if (!res.locals.currentUser) {
         return res.redirect('/');
     }
-    console.log('hi1');
     if (req.body.secret === process.env.ADMIN_SECRET) {
-        console.log("hi2");
-        res.locals.currentUser.update({isAdmin:true}).exec().then(() => {
+        res.locals.currentUser.update({ isAdmin: true }).exec().then(() => {
             return res.redirect('/');
         })
     } else {
-        console.log("hi3");
-        return res.render('become_admin', {errors: ["Wrong pass code!"]});
+        return res.render('become_admin', { errors: ["Wrong pass code!"] });
     }
 }
 
-exports.becomeMemberGet = function(req, res) {
+exports.becomeMemberGet = function (req, res) {
+    res.render('become_member');
 
 }
 
-exports.becomeMemberPost = function(req, res) {
-
+exports.becomeMemberPost = function (req, res) {
+    if (!res.locals.currentUser) {
+        return res.redirect('/');
+    }
+    if (req.body.secret === process.env.MEMBER_SECRET) {
+        res.locals.currentUser.update({ membershipStatus: true }).exec().then(() => {
+            return res.redirect('/');
+        })
+    } else {
+        return res.render('become_member', { errors: ["Wrong pass code!"] });
+    }
 }

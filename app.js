@@ -42,14 +42,11 @@ passport.use(
         return done(null, false, { message: "Incorrect username" });
       }
 
-      bcrypt.compare(password, user.password, (err, res) => {
-        if (res) {
-          return done(null, user);
-        } else {
-          return done(null, false, { message: "Incorrect passsword" });
-        }
-      });
-
+      if (password === user.password) {
+        return done(null, user);
+      } else {
+        return done(null, false, { message: "Incorrect passsword" });
+      }
     })
   })
 )
@@ -75,7 +72,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use((req,res,next) => {
+app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 })
