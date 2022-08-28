@@ -7,7 +7,7 @@ html
     .full-wrapper
       block header 
         .header-container 
-          .header-subgroup
+          .header-subgroup.flexable
             if currentUser&&currentUser.isAdmin
               .header-link You are an admin
             else 
@@ -17,7 +17,11 @@ html
               .header-link You are a member
             else 
               a(href='/become-member').header-link Become member
-          .header-subgroup
+
+          if currentUser
+            .header-subgroup 
+              a(href='/message/create').header-link Create a message!
+          .header-subgroup.flexable.end
             if currentUser
               a(href=currentUser.url).header-link #{currentUser.username} 
               a(href='/log-out').header-link Log out

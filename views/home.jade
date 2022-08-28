@@ -7,12 +7,12 @@ block content
                 for message in messages 
                     .message-card
                         .message-title #{message.title}
-                        if (currentUser&&message.author.toString()==currentUser._id)
+                        if (currentUser&&message.author._id.toString()==currentUser._id)
                             .message-author by #{currentUser.username}
                         else if (currentUser&&currentUser.membershipStatus)
                             .message-author by #{message.author.username}
                         .message-text #{message.text}  
-                        if (currentUser&&message.author.toString()==currentUser._id)||(currentUser&&currentUser.isAdmin)
+                        if (currentUser&&message.author._id.toString()==currentUser._id)||(currentUser&&currentUser.isAdmin)
                             .action-group 
                                 a(href=message.url+'/update').header-link Edit
                                 a(href=message.url+'/remove').header-link-red Delete

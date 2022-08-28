@@ -46,6 +46,14 @@ a {
     gap : 1rem;
 }
 
+.flexable {
+  flex : 1;
+}
+
+.end {
+  justify-content: end;
+}
+
 .header-link {
   text-decoration: none;
   color : var(--link-blue);

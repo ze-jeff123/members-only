@@ -10,6 +10,8 @@ const session = require('express-session')
 const LocalStrategy = require("passport-local").Strategy;
 const userController = require('./controllers/userController');
 const bodyParser = require('body-parser');
+const compression = require('compression');
+
 require('dotenv').config();
 
 const mongoose = require('mongoose');
@@ -20,9 +22,11 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const helmet = require('helmet');
 
 var app = express();
 
+app.use(helmet());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -71,11 +75,14 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 })
+
+
 
 app.use('/', indexRouter);
 
